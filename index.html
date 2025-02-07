@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Organization Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .dashboard-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .dashboard-item {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-item span {
+            font-weight: bold;
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .loading {
+            color: #7f8c8d;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GitHub Organization Dashboard</h1>
+
+    <div class="dashboard-container">
+        <div class="dashboard-item">
+            <p>Total Repositories: <span id="repo-count" class="loading">Loading...</span></p>
+        </div>
+        <div class="dashboard-item">
+            <p>Total Members: <span id="member-count" class="loading">Loading...</span></p>
+        </div>
+        <div class="dashboard-item">
+            <p>Total Teams: <span id="team-count" class="loading">Loading...</span></p>
+        </div>
+        <div class="dashboard-item">
+            <p>Total Projects: <span id="project-count" class="loading">Loading...</span></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Powered by GitHub API | Dashboard</p>
+    </div>
+
+    <script>
+        // Replace with your GitHub organization name
+        const orgName = 'your-organization-name';
+
+        // Function to fetch data from GitHub API
+        async function fetchGitHubData() {
+            try {
+                // Fetch data for repositories, members, teams, and projects
+                const repoResponse = await fetch(`https://api.github.com/orgs/${orgName}/repos`);
+                const memberResponse = await fetch(`https://api.github.com/orgs/${orgName}/members`);
+                const teamResponse = await fetch(`https://api.github.com/orgs/${orgName}/teams`);
+                const projectResponse = await fetch(`https://api.github.com/orgs/${orgName}/projects`);
+                
+                // Parse the JSON response
+                const repos = await repoResponse.json();
+                const members = await memberResponse.json();
+                const teams = await teamResponse.json();
+                const projects = await projectResponse.json();
+                
+                // Display the results
+                document.getElementById('repo-count').textContent = repos.length;
+                document.getElementById('member-count').textContent = members.length;
+                document.getElementById('team-count').textContent = teams.length;
+                document.getElementById('project-count').textContent = projects.length;
+
+            } catch (error) {
+                console.error('Error fetching data from GitHub API:', error);
+                document.getElementById('repo-count').textContent = 'Error';
+                document.getElementById('member-count').textContent = 'Error';
+                document.getElementById('team-count').textContent = 'Error';
+                document.getElementById('project-count').textContent = 'Error';
+            }
+        }
+
+        // Fetch and display the data when the page loads
+        window.onload = fetchGitHubData;
+    </script>
+
+</body>
+</html>
